@@ -4,3 +4,10 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .DS_Store
+
+# local env files -- never commit real values
+.env
+.env*.local
+
+# vercel cli link metadata
+.vercel

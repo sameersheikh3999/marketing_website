@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { site } from "@/data/site";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
+
+const siteUrl = getSiteUrl();
 
 // next/font self-hosts the files and inlines the @font-face rules, so there is
 // no render-blocking request to fonts.googleapis.com and no layout shift.
@@ -14,7 +17,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(siteUrl),
   title: {
     default: `${site.name} -- ${site.tagline}`,
     template: `%s -- ${site.name}`,
@@ -22,7 +25,7 @@ export const metadata: Metadata = {
   description: site.description,
   openGraph: {
     type: "website",
-    url: site.url,
+    url: siteUrl,
     siteName: site.name,
     title: `${site.name} -- ${site.tagline}`,
     description: site.description,

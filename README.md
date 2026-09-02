@@ -12,6 +12,55 @@ npm run build      # static prerender
 npm run typecheck
 ```
 
+## Deploying to Vercel
+
+The repo is deploy-ready with **no configuration**. Vercel detects Next.js and
+sets the build command, output directory, and Node version itself.
+
+**Import the repo** at [vercel.com/new](https://vercel.com/new) → pick
+`sameersheikh3999/marketing_website` → **Deploy**. Leave every field on its
+default; do not set a Root Directory, since the Next.js app is at the repo root.
+
+Or from this directory:
+
+```bash
+npx vercel          # first run links the project and deploys a preview
+npx vercel --prod   # promote to production
+```
+
+Every push to `main` then redeploys production, and every other branch or PR
+gets its own preview URL.
+
+### Environment variables
+
+None are required. `getSiteUrl()` in [`src/lib/site-url.ts`](src/lib/site-url.ts)
+reads Vercel's built-in `VERCEL_PROJECT_PRODUCTION_URL`, so OG tags,
+`robots.txt`, and `sitemap.xml` point at the right origin on the first deploy —
+and preview deploys advertise themselves rather than production.
+
+Once a **custom domain** is attached, set this in Vercel → Settings →
+Environment Variables (Production only):
+
+```
+NEXT_PUBLIC_SITE_URL = https://yourdomain.com
+```
+
+It takes precedence over the Vercel-provided URL. Redeploy for it to take
+effect — it is read at build time.
+
+### What is checked at build
+
+`next build` runs `tsc`, so a type error fails the deploy rather than shipping.
+All four routes prerender as static (`/`, `/_not-found`, `/robots.txt`,
+`/sitemap.xml`), which means Vercel serves them from the CDN with no function
+invocations.
+
+Security headers (`X-Content-Type-Options`, `Referrer-Policy`,
+`X-Frame-Options`, `Permissions-Policy`) are set in
+[`next.config.mjs`](next.config.mjs) rather than `vercel.json`, so they apply to
+`next start` and any other host too. There is deliberately no CSP — see the
+comment in that file.
+
 ## Where the content lives
 
 Everything is in **[`src/data/site.ts`](src/data/site.ts)** — brand, nav, hero,

@@ -13,7 +13,9 @@ export const site = {
   tagline: "Product analytics that answers, not just charts",
   description:
     "Slipstream unifies product, billing, and support data into one timeline so your team can see why customers churn -- and act before they do.",
-  url: "https://slipstream.example.com",
+  // The canonical origin is NOT set here -- it comes from the environment via
+  // src/lib/site-url.ts, so preview deploys advertise themselves rather than
+  // production. Set NEXT_PUBLIC_SITE_URL once a custom domain is live.
   email: "hello@slipstream.example.com",
 } as const;
 
