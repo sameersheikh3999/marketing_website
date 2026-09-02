@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Mirrors tailwind.config.ts so plain CSS can reach the same tokens. */
+    --color-primary: #2563eb;
+    --color-on-primary: #ffffff;
+    --color-accent: #ea580c;
+    --color-accent-ink: #c2410c;
+    --color-background: #f8fafc;
+    --color-foreground: #1e293b;
+    --color-border: #e2e8f0;
+
+    /* density 3/10 -- spacious */
+    --space-xs: 0.75rem;
+    --space-sm: 1.5rem;
+    --space-md: 2.5rem;
+    --space-lg: 4rem;
+    --space-xl: 6rem;
+    --space-2xl: 9rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Sticky header is 4rem tall; keep anchor targets clear of it. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Never remove the focus ring -- restyle it. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    border-radius: 0.375rem;
+  }
+
+  ::selection {
+    @apply bg-primary/15 text-foreground;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-white/60 bg-white/70 shadow-glass backdrop-blur-glass;
+  }
+
+  /* Balanced headline wrapping avoids a one-word orphan on the last line. */
+  .balance {
+    text-wrap: balance;
+  }
+
+  .prose-measure {
+    max-width: 65ch;
+  }
+}
+
+/*
+ * Scroll reveal. Elements start hidden and get `data-revealed` from the
+ * IntersectionObserver in <Reveal>.
+ *
+ * The hidden start state is gated on `html[data-js="true"]`, which the inline
+ * script in layout.tsx sets before first paint. So if JS is blocked or fails,
+ * the rule never applies and every section renders visible -- content is never
+ * trapped at opacity 0. Reduced motion skips the whole block for the same
+ * reason.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-js="true"] [data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  html[data-js="true"] [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
